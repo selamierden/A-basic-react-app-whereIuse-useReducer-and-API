@@ -1,9 +1,14 @@
 import React from "react";
-import CoinList from "./components/CoinList";
+import Navbar from "./components/Navbar";
+import CoinList from "./components/CoinList"
+
 
 function App() {
   return (
-    <CoinList></CoinList>
+    <div>
+        <Navbar></Navbar>
+        <CoinList></CoinList> 
+    </div>
   );
 }
 
