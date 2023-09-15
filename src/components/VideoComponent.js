@@ -39,7 +39,7 @@ function VideoComponent() {
             </div>
             <div className="row justify-content-center my-3">
               <div className="col-md-2">
-                <button id="play-pause-button"onClick={playPauseVideo} className="btn btn-block hvr-shrink" style={{ color: "white", fontWeight: 600 }}>
+                <button id="play-pause-button" onClick={playPauseVideo} className="btn btn-block hvr-shrink" style={{ color: "white", fontWeight: 600 }}>
                   {isPlaying ? <Pause size={24} /> : <Play size={24} />}
                 </button>
               </div>

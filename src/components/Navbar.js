@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import "./navbar.css"
 
 function Navbar() {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -8,10 +9,10 @@ function Navbar() {
   };
 
   return (
-    <div className="App">
+    <div className="Navbar">
       <nav className="navbar navbar-expand-lg navbar-light" style={{ backgroundColor: 'black' }}>
         <a className="navbar-brand" href="/">
-          <img src="/img/etter.png" style={{width:"170px", height: "auto" , paddingLeft: '16px', paddingBottom: '17px' }} className="d-inline-block align-top" alt="" />
+          <img src="/img/etter.png" style={{width:"200px", height: "auto" , paddingLeft: '16px', paddingBottom: '17px' }} className="d-inline-block align-top" alt="" />
         </a>
         <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul className="navbar-nav" style={{ fontSize: '20px', fontFamily: 'Gill Sans, Gill Sans MT, Calibri, Trebuchet MS, sans-serif' }}>
@@ -38,10 +39,10 @@ function Navbar() {
         <div className="ml-auto" style={{ fontSize: '21px', fontFamily: 'Gill Sans, Gill Sans MT, Calibri, Trebuchet MS, sans-serif' }}>
           <ul className="navbar-nav">
             <li className="nav-item">
-              <a className="nav-link hvr-underline-from-left" href="/" data-toggle="modal" data-target="#loginModal" style={{ color: 'white' }}>Log In</a>
+              <a className="nav-link hvr-underline-from-left" href="/"style={{ color: 'white' }}>Log In</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link hvr-underline-from-left" href="/" data-toggle="modal" data-target="#signupModal" style={{ color: 'white', borderRadius: '10px' }}>Register</a>
+              <a className="nav-link hvr-underline-from-left" href="/"style={{ color: 'white', borderRadius: '10px' }}>Register</a>
             </li>
           </ul>
         </div>
