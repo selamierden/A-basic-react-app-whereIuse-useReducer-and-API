@@ -2,13 +2,14 @@ import React from 'react'
 import Navbar from './components/Navbar'
 import VideoComponent from './components/VideoComponent'
 import Footer from './components/Footer'
+import MainPrices from './components/MainPrices'
+import CoinList from './components/CoinList'
 
 function App() {
   return (
-    <div>
+    <div style={{backgroundColor:"darkblue"}}>
       <Navbar></Navbar>
-      <VideoComponent></VideoComponent>
-      <Footer></Footer>
+      <CoinList></CoinList>
     </div>
   )
 }

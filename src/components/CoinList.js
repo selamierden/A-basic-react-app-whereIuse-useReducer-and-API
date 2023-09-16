@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import "./coinlist.css";
 
 function CoinList() {
   const [coinData, setCoinData] = useState([]);
@@ -48,7 +49,8 @@ function CoinList() {
   };
 
   return (
-    <div className="d-flex justify-content-center">
+    <div className='container mt-4'>
+      <div className="d-flex justify-content-center">
       <table className="table table-bordered">
         <thead>
           <tr>
@@ -98,6 +100,7 @@ function CoinList() {
           ))}
         </tbody>
       </table>
+    </div>
     </div>
   );
 }
