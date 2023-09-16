@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import "./coinlist.css";
 
 function CoinList() {
   const [coinData, setCoinData] = useState([]);

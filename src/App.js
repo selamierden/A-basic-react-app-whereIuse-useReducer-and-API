@@ -9,7 +9,9 @@ function App() {
   return (
     <div style={{backgroundColor:"darkblue"}}>
       <Navbar></Navbar>
-      <CoinList></CoinList>
+      <VideoComponent></VideoComponent>
+      <MainPrices></MainPrices>
+      <Footer></Footer>
     </div>
   )
 }
