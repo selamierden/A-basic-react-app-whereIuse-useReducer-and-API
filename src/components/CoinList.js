@@ -8,6 +8,7 @@ function CoinList() {
     change: 'asc',
   });
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {

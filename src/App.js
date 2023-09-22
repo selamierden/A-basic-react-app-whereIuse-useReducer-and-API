@@ -4,14 +4,14 @@ import VideoComponent from './components/VideoComponent'
 import Footer from './components/Footer'
 import MainPrices from './components/MainPrices'
 import CoinList from './components/CoinList'
+import { CurrencyBitcoin } from 'react-bootstrap-icons'
+import CurrentTransaction from './components/CurrentTransaction'
 
 function App() {
+  
   return (
-    <div style={{backgroundColor:"darkblue"}}>
-      <Navbar></Navbar>
-      <VideoComponent></VideoComponent>
-      <MainPrices></MainPrices>
-      <Footer></Footer>
+    <div>
+      <CurrentTransaction></CurrentTransaction>
     </div>
   )
 }
