@@ -1,5 +1,4 @@
 import React from "react";
-import { Trash , Sucsess } from 'react-bootstrap-icons'
 
 function CurrentTransaction() {
 
@@ -101,82 +100,15 @@ function CurrentTransaction() {
 
     updateUIWithProfit( row , spot);
 
-    row.cells[8].innerHTML = '<button class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
-    row.cells[9].innerHTML = '<button onClick="refreshRow(this)" id="rbtn" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
-    row.cells[10].innerHTML = '<button  class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
+    row.cells[8].innerHTML = '<button id="deleteRowBtn" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
+    row.cells[9].innerHTML = '<button id="refreshBtn"  class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
+    row.cells[10].innerHTML = '<button id="finishBtn"  class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
 
     updateBalance();
 
-  }  
-
-   async function refreshRow(button){
-    var direction = document.getElementById("longShort").value;
-
-    var row = button.parentNode.parentNode;
-
-    var coin = row.cells[0].innerHTML;
-    var direction = row.cells[5].innerHTML;
-    var leverage = row.cells[4].innerHTML
-    var apiUrl = "https://api.coingecko.com/api/v3/simple/price?ids=" + coin + "&vs_currencies=usd";
-    var response = await fetch(apiUrl);
-    var data = await response.json();
-    var currentPrice = data[coin.toLowerCase()].usd;
-
-    var currentpriceCell = row.cells[3];
-    currentpriceCell.innerHTML = currentPrice;
-
-    var amount = parseFloat(row.cells[1].innerHTML);
-    var purchasePrice = parseFloat(row.cells[2].innerHTML);
-
-    if(direction === "Long"){
-      var profit = ((currentPrice / purchasePrice) * amount - amount) * leverage;
-      var profitRate = (profit / amount) * 100;
-    } else {
-      var profitR = -1 * (((currentPrice / purchasePrice) * amount - amount) * leverage);
-      var profitRateR = (profit / amount) * 100;
-    }
-
-    var profitCell = row.cells[6];
-    var profitRateCell = row.cells[7];
-    profitCell.innerHTML = profit.toFixed(2);
-    profitRateCell.innerHTML = profitRate.toFixed(2) + "%";
-
-    if (profitRate > 0) {
-      profitRateCell.style.color = "green";
-    } else if (profitRate < 0) {
-      profitRateCell.style.color = "red";
-    }
+  }
   
-    if (profit > 0) {
-      profitCell.style.color = "green";
-    } else if (profit < 0) {
-      profitCell.style.color = "red";
-    }
 
-    var cspots = JSON.parse(localStorage.getItem("cspots"));
-  var spotIndex = -1;
-  for (var i = 0; i < cspots.length; i++) {
-    if (
-      cspots[i].coin === coin &&
-      parseFloat(cspots[i].miktar) === amount &&
-      parseFloat(cspots[i].firstprice) === purchasePrice
-    ) {
-      spotIndex = i;
-      break;
-    }
-  }
-
-  if (spotIndex !== -1) {
-    cspots[spotIndex].currentPrice = currentPrice;
-    cspots[spotIndex].profit = profitR;
-    cspots[spotIndex].profitRate = profitRateR;
-    localStorage.setItem("cspots", JSON.stringify(cspots));
-  }
-
-
-  updateBalance();
-}
- 
   return (
     <div>
       <div
