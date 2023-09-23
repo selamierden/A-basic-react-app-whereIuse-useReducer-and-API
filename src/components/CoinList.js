@@ -93,7 +93,7 @@ function CoinList() {
                   color: coin.price_change_percentage_24h >= 0 ? 'green' : 'red',
                 }}
               >
-                {coin.price_change_percentage_24h.toFixed(2)}%
+                {coin.price_change_percentage_24h}%
               </td>
               <td>${coin.total_volume.toLocaleString()}</td>
             </tr>

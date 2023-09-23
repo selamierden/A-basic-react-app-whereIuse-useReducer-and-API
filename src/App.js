@@ -1,17 +1,16 @@
 import React from 'react'
-import ReactDOM from "react-dom";
 import Navbar from './components/Navbar'
 import VideoComponent from './components/VideoComponent'
 import Footer from './components/Footer'
 import MainPrices from './components/MainPrices'
 import CoinList from './components/CoinList'
 import CurrentTransaction from './components/CurrentTransaction'
-import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
-import { Nav } from 'react-bootstrap';
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+
 
 const Home = () => {
   return (
-    <div>
+    <div style={{backgroundColor: "darkblue"}}>
       <Navbar></Navbar>
       <VideoComponent></VideoComponent>
       <MainPrices></MainPrices>
@@ -75,7 +74,7 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/news" element={<News />} />
         <Route path="/prices" element={<Prices />} />
         <Route path="/ct" element={<CT />} />

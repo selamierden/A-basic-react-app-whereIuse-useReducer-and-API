@@ -11,7 +11,7 @@ function MainPrices() {
   }, []);
 
   return (
-    <div className='mt-4'>
+    <div style={{backgroundColor: "darkblue"}} className='mt-4'>
       <div className="container">
         <div className="row">
           {cryptoData.map((crypto, index) => (

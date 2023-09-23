@@ -17,7 +17,7 @@ function Navbar() {
         <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul className="navbar-nav" style={{ fontSize: '20px', fontFamily: 'Gill Sans, Gill Sans MT, Calibri, Trebuchet MS, sans-serif' }}>
             <li className="nav-item active">
-              <Link to="/home" className="nav-link hvr-underline-from-left" style={{ color: 'white' }}>Home</Link>
+              <Link to="/" className="nav-link hvr-underline-from-left" style={{ color: 'white' }}>Home</Link>
             </li>
             <li className="nav-item active">
               <Link to="/news" className="nav-link hvr-underline-from-left"  style={{ color: 'white' }}>News</Link>
