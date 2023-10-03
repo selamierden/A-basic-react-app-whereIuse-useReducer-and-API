@@ -32,7 +32,7 @@ function CoinList() {
     return () => clearInterval(intervalId);
   }, []);
 
-  // Veriyi sıralayan fonksiyon
+  
   const sortData = (field) => {
     const order = sortOrder[field] === 'asc' ? 'desc' : 'asc';
     setSortOrder({ ...sortOrder, [field]: order });
@@ -93,7 +93,7 @@ function CoinList() {
                   color: coin.price_change_percentage_24h >= 0 ? 'green' : 'red',
                 }}
               >
-                {coin.price_change_percentage_24h}%
+                {parseFloat(coin.price_change_percentage_24h).toFixed(2)}%
               </td>
               <td>${coin.total_volume.toLocaleString()}</td>
             </tr>
