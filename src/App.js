@@ -3,6 +3,7 @@ import Navbar from './components/Navbar'
 import VideoComponent from './components/VideoComponent'
 import Footer from './components/Footer'
 import MainPrices from './components/MainPrices'
+import Emtia from './components/Emtia'
 import CoinList from './components/CoinList'
 import CurrentTransaction from './components/CurrentTransaction'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
@@ -11,10 +12,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 const Home = () => {
   return (
     <div style={{backgroundColor: "darkblue"}}>
-      <Navbar></Navbar>
-      <VideoComponent></VideoComponent>
-      <MainPrices></MainPrices>
-      <Footer></Footer>
+      <Emtia></Emtia>
     </div>
   );
 };
