@@ -1,73 +1,74 @@
 import React from 'react'
 
 function Emtia() {
+
   return (
-    <div className='mt-4'>
+    <div>
         <div className="container">
           <div className="row">
             <div className="col-md-4 mb-4">
-              <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
+              <div className="card mt-4" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
                 <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
+                  <img src="data:image/png;base64,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" alt="GOLD" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>GOLD</h4>
                 </div>
                 <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
+                  <h5 className="card-title">Price: ${}</h5>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 mb-4">
+              <div className="card mt-4" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
+                <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
+                  <img src="data:image/png;base64,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" alt="SILVER" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>SİLVER</h4>
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Price: ${}</h5>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-4 mb-4">
+              <div className="card mt-4" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
+                <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
+                  <img src="data:image/jpeg;base64,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" alt="OIL" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>OİL</h4>
+                </div>
+                <div className="card-body">
+                  <h5 className="card-title">Price: ${}</h5>
                 </div>
               </div>
             </div>
             <div className="col-md-4 mb-4">
               <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
                 <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
+                  <img src="data:image/png;base64,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" alt="DXY" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>DXY</h4>
                 </div>
                 <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
+                  <h5 className="card-title">Price: ${}</h5>
                 </div>
               </div>
             </div>
             <div className="col-md-4 mb-4">
               <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
                 <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
+                  <img src="data:image/png;base64,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" alt="NASDAQ" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>NASDAQ</h4>
                 </div>
                 <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
+                  <h5 className="card-title">Price: ${}</h5>
                 </div>
               </div>
             </div>
             <div className="col-md-4 mb-4">
               <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
                 <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
+                  <img src="https://s3-symbol-logo.tradingview.com/crypto/XTVCBTC--600.png" alt="BTC" style={{ width: "25px", height: "25px", marginRight: "10px" }} />
+                  <h4>BTC</h4>
                 </div>
                 <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 mb-4">
-              <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
-                <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-4 mb-4">
-              <div className="card" style={{ width: "100%", backgroundColor: "black", color: "white", borderRadius: "6px" }}>
-                <div className="card-header" style={{ display: "flex", alignItems: "center" }}>
-                  <img src={crypto.image} alt={crypto.name} style={{ width: "25px", height: "25px", marginRight: "10px" }} />
-                  <h4>{crypto.symbol}</h4>
-                </div>
-                <div className="card-body">
-                  <h5 className="card-title">Price: ${crypto.current_price}</h5>
+                  <h5 className="card-title">Price: ${}</h5>
                 </div>
               </div>
             </div>
