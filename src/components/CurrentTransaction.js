@@ -1,4 +1,4 @@
-import React, { useState , useEffect } from "react";
+import React, { useState } from "react";
 
 function CurrentTransaction() {
   const [coin, setCoin] = useState("");
@@ -26,7 +26,8 @@ function CurrentTransaction() {
   };
 
   const addLocalStorage = (spot) => {
-    const updatedCspots = [...cspots, spot];
+    const existingCspots = JSON.parse(localStorage.getItem("cspots"));
+    const updatedCspots = [...existingCspots, spot];
     setCspots(updatedCspots);
     localStorage.setItem("cspots", JSON.stringify(updatedCspots));
   };
@@ -217,7 +218,6 @@ function CurrentTransaction() {
 
       updateBalance();
 
-      console.log("Satıldı");
     });
   }
 
