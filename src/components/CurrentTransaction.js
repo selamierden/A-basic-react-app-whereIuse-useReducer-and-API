@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect } from "react";
 
 function CurrentTransaction() {
   const [coin, setCoin] = useState("");
@@ -6,9 +6,13 @@ function CurrentTransaction() {
   const [purchasePrice, setPurchasePrice] = useState();
   const [leverage, setLeverage] = useState(1);
   const [direction, setDirection] = useState("Long");
-  const [cspots, setCspots] = useState([]);
-  
+  const cspots = [];
 
+  useEffect(() => {
+    loadTableFromLocalStorage();
+  }, []);
+
+  
   const calculateProfit = (
     direction,
     currentPrice,
@@ -26,10 +30,37 @@ function CurrentTransaction() {
   };
 
   const addLocalStorage = (spot) => {
-    const existingCspots = JSON.parse(localStorage.getItem("cspots"));
-    const updatedCspots = [...existingCspots, spot];
-    setCspots(updatedCspots);
-    localStorage.setItem("cspots", JSON.stringify(updatedCspots));
+    let cspots = JSON.parse(localStorage.getItem("cspots")) || [];
+    if (!Array.isArray(cspots)) {
+        cspots = []; // "cspots" bir dizi değilse, boş bir dizi olarak başlatın
+    }
+    cspots.push(spot);
+    localStorage.setItem("cspots", JSON.stringify(cspots));
+  };
+
+  function loadTableFromLocalStorage() {
+    
+  const cspots = JSON.parse(localStorage.getItem("cspots"));
+  const table = document.getElementById("spot-table");
+
+  table.innerHTML = "";
+
+  for (const spot of cspots) {
+    const row = table.insertRow(-1);
+
+    for (let i = 0; i < 11; i++) {
+      row.insertCell(i);
+    }
+
+    updateUIWithProfit(row, spot);
+
+    row.cells[8].innerHTML =
+      '<button id="deleteRowBtn"  class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
+    row.cells[9].innerHTML =
+      '<button id="refreshBtn"  class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
+    row.cells[10].innerHTML =
+      '<button id="finishBtn"  class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
+  }
   };
 
   const updateUIWithProfit = (row, spot) => {
@@ -91,12 +122,86 @@ function CurrentTransaction() {
     pnlDiv.textContent = "Current PNL : " + currentProfit.toFixed(2) + "$";
   };
 
-  async function SubmitForm() {
+  async function fetchCurrentPrice(coin) {
     const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd`;
     const response = await fetch(apiUrl);
     const data = await response.json();
-    const currentPrice = data[coin.toLowerCase()].usd;
-
+    return data[coin.toLowerCase()].usd;
+  }
+  
+  function createSpotRow(spot) {
+    const table = document.getElementById("spot-table");
+    const row = table.insertRow(-1);
+  
+    for (let i = 0; i < 11; i++) {
+      row.insertCell(i);
+    }
+  
+    updateUIWithProfit(row, spot);
+  
+    row.cells[8].innerHTML =
+      '<button id="deleteRowBtn" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
+    row.cells[9].innerHTML =
+      '<button id="refreshBtn" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
+    row.cells[10].innerHTML =
+      '<button id="finishBtn" class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
+  
+    return row;
+  }
+  
+  function handleDeleteRow(row, coin) {
+    row.remove();
+  
+    const cspots = JSON.parse(localStorage.getItem("cspots"));
+    const index = cspots.findIndex((spot) => spot.coin === coin);
+  
+    if (index > -1) {
+      cspots.splice(index, 1);
+      localStorage.setItem("cspots", JSON.stringify(cspots));
+    }
+    console.log("Silindi");
+  }
+  
+  async function handleRefreshBtn(row, spot) {
+    const currentPrice = await fetchCurrentPrice(spot.coin);
+  
+    spot.currentPrice = currentPrice;
+  
+    const { profit, profitRate } = calculateProfit(
+      spot.direction,
+      currentPrice,
+      spot.purchasePrice,
+      spot.amount,
+      spot.leverage
+    );
+  
+    spot.profit = profit;
+    spot.profitRate = profitRate;
+  
+    updateUIWithProfit(row, spot);
+    console.log("Yenilendi");
+  }
+  
+  function handleFinishBtn(spot) {
+    const soldSpot = {
+      coin: spot.coin,
+      amount: spot.amount,
+      purchasePrice: spot.purchasePrice,
+      leverage: spot.leverage,
+      direction: spot.direction,
+      currentPrice: spot.currentPrice,
+      profit: spot.profit,
+      profitRate: spot.profitRate,
+    };
+  
+    const soldArray = JSON.parse(localStorage.getItem("spots")) || [];
+    soldArray.push(soldSpot);
+    localStorage.setItem("spots", JSON.stringify(soldArray));
+  }
+  
+  async function SubmitForm() {
+    const currentPrice = await fetchCurrentPrice(coin);
+  
     const { profit, profitRate } = calculateProfit(
       direction,
       currentPrice,
@@ -104,7 +209,7 @@ function CurrentTransaction() {
       amount,
       leverage
     );
-
+  
     const spot = {
       coin,
       amount,
@@ -115,111 +220,33 @@ function CurrentTransaction() {
       profit,
       profitRate,
     };
-
+  
     addLocalStorage(spot);
-
-    const table = document.getElementById("spot-table");
-    const row = table.insertRow(-1);
-
-    for (let i = 0; i < 11; i++) {
-      row.insertCell(i);
-    }
-
-    updateUIWithProfit(row, spot);
-
-    row.cells[8].innerHTML =
-      '<button id="deleteRowBtn"  class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
-    row.cells[9].innerHTML =
-      '<button id="refreshBtn"  class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
-    row.cells[10].innerHTML =
-      '<button id="finishBtn"  class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
-
+    const row = createSpotRow(spot);
+  
     updateBalance();
-
+  
     const deleteRowBtn = row.querySelector("#deleteRowBtn");
     const refreshBtn = row.querySelector("#refreshBtn");
     const finishBtn = row.querySelector("#finishBtn");
-
+  
     deleteRowBtn.addEventListener("click", () => {
-      row.remove();
-
-      var cspots = JSON.parse(localStorage.getItem("cspots"));
-      var index = -1;
-      for (var i = 0; i < cspots.length; i++) {
-        if (cspots[i].coin === coin) {
-          index = i;
-          break;
-        }
-      }
-      if (index > -1) {
-        cspots.splice(index, 1);
-        localStorage.setItem("cspots", JSON.stringify(cspots));
-      }
-      console.log("Silindi");
+      handleDeleteRow(row, coin);
     });
-
-    refreshBtn.addEventListener("click", async () => {
-
-      const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd`;
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      const currentPrice = data[coin.toLowerCase()].usd;
-
-      spot.currentPrice = currentPrice;
-
-      const { profit, profitRate } = calculateProfit(
-        direction,
-        currentPrice,
-        purchasePrice,
-        amount,
-        leverage
-      );
-
-      spot.profit = profit;
-      spot.profitRate = profitRate;
-
-      updateUIWithProfit(row, spot);
-      console.log("Yenilendi");
+  
+    refreshBtn.addEventListener("click", () => {
+      handleRefreshBtn(row, spot);
     });
-
+  
     finishBtn.addEventListener("click", () => {
-
-      const soldSpot = {
-        coin,
-        amount,
-        purchasePrice,
-        leverage,
-        direction,
-        currentPrice,
-        profit,
-        profitRate,
-      };
-
-      var soldArray = JSON.parse(localStorage.getItem("spots")) || [];
-
-      soldArray.push(soldSpot)
-
-      localStorage.setItem("spots", JSON.stringify(soldArray))
-
+      handleFinishBtn(spot);
+  
       row.remove();
-
-      var cspots = JSON.parse(localStorage.getItem("cspots"));
-      var index = -1;
-      for (var i = 0; i < cspots.length; i++) {
-        if (cspots[i].coin === coin) {
-          index = i;
-          break;
-        }
-      }
-      if (index > -1) {
-        cspots.splice(index, 1);
-        localStorage.setItem("cspots", JSON.stringify(cspots));
-      }
-
+  
       updateBalance();
-
     });
   }
+  
 
   return (
     <div>
