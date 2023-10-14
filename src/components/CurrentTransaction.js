@@ -6,7 +6,7 @@ function CurrentTransaction() {
   const [purchasePrice, setPurchasePrice] = useState();
   const [leverage, setLeverage] = useState(1);
   const [direction, setDirection] = useState("Long");
-  const cspots = [];
+  // const cspots = [];
 
   useEffect(() => {
     loadTableFromLocalStorage();
@@ -39,29 +39,37 @@ function CurrentTransaction() {
   };
 
   function loadTableFromLocalStorage() {
-    
-  const cspots = JSON.parse(localStorage.getItem("cspots"));
-  const table = document.getElementById("spot-table");
-
-  table.innerHTML = "";
-
-  for (const spot of cspots) {
-    const row = table.insertRow(-1);
-
-    for (let i = 0; i < 11; i++) {
-      row.insertCell(i);
+    const cspots = JSON.parse(localStorage.getItem("cspots"));
+    const table = document.getElementById("spot-table");
+  
+    table.innerHTML = "";
+  
+    for (const spot of cspots) {
+      const row = createSpotRow(spot);  // Create a row using your existing function
+  
+      // Get the buttons in the row
+      const deleteRowBtn = row.querySelector("#deleteRowBtn");
+      const refreshBtn = row.querySelector("#refreshBtn");
+      const finishBtn = row.querySelector("#finishBtn");
+  
+      // Attach event listeners to the buttons
+      deleteRowBtn.addEventListener("click", () => {
+        handleDeleteRow(row, spot.coin);
+      });
+  
+      refreshBtn.addEventListener("click", () => {
+        handleRefreshBtn(row, spot);
+      });
+  
+      finishBtn.addEventListener("click", () => {
+        handleFinishBtn( row  , spot , coin);
+      });
+  
+      table.appendChild(row);
     }
 
-    updateUIWithProfit(row, spot);
-
-    row.cells[8].innerHTML =
-      '<button id="deleteRowBtn"  class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
-    row.cells[9].innerHTML =
-      '<button id="refreshBtn"  class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
-    row.cells[10].innerHTML =
-      '<button id="finishBtn"  class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
+    updateBalance();
   }
-  };
 
   const updateUIWithProfit = (row, spot) => {
     const {
@@ -95,9 +103,13 @@ function CurrentTransaction() {
     } else {
       row.cells[6].style.color = "red";
     }
+    
+    updateBalance();
   };
 
   const updateBalance = () => {
+    var cspots = JSON.parse(localStorage.getItem("cspots"));
+
     var currentProfit = 0;
     var currentBalance = 0;
 
@@ -120,6 +132,9 @@ function CurrentTransaction() {
 
     var pnlDiv = document.getElementById("pnl");
     pnlDiv.textContent = "Current PNL : " + currentProfit.toFixed(2) + "$";
+
+    console.log(walletPrice);
+    console.log(currentProfit);
   };
 
   async function fetchCurrentPrice(coin) {
@@ -159,7 +174,8 @@ function CurrentTransaction() {
       cspots.splice(index, 1);
       localStorage.setItem("cspots", JSON.stringify(cspots));
     }
-    console.log("Silindi");
+
+    updateBalance();
   }
   
   async function handleRefreshBtn(row, spot) {
@@ -179,10 +195,13 @@ function CurrentTransaction() {
     spot.profitRate = profitRate;
   
     updateUIWithProfit(row, spot);
-    console.log("Yenilendi");
+    updateBalance();
   }
   
-  function handleFinishBtn(spot) {
+  function handleFinishBtn(row , spot) {
+
+    handleDeleteRow(row , coin)
+
     const soldSpot = {
       coin: spot.coin,
       amount: spot.amount,
@@ -224,8 +243,6 @@ function CurrentTransaction() {
     addLocalStorage(spot);
     const row = createSpotRow(spot);
   
-    updateBalance();
-  
     const deleteRowBtn = row.querySelector("#deleteRowBtn");
     const refreshBtn = row.querySelector("#refreshBtn");
     const finishBtn = row.querySelector("#finishBtn");
@@ -239,12 +256,10 @@ function CurrentTransaction() {
     });
   
     finishBtn.addEventListener("click", () => {
-      handleFinishBtn(spot);
-  
-      row.remove();
-  
-      updateBalance();
+      handleFinishBtn(row , spot , coin);
     });
+    
+    updateBalance();
   }
   
 
