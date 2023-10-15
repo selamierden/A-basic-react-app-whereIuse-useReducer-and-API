@@ -7,6 +7,7 @@ import MainPrices from './components/MainPrices'
 import CoinList from './components/CoinList'
 import CurrentTransaction from './components/CurrentTransaction'
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import TransactionRecord from './components/TransactionRecord'
 
 
 const Home = () => {
@@ -51,7 +52,7 @@ const TR = () => {
   return (
     <div>
        <Navbar></Navbar>
-       BURASI Transaction Records GARDEŞ
+       <TransactionRecord></TransactionRecord>
     </div>
   )
 }

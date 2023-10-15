@@ -1,70 +1,45 @@
 import React, { useState , useEffect } from "react";
 
-function CurrentTransaction() {
+function TransactionRecord() {
+
   const [coin, setCoin] = useState("");
   const [amount, setAmount] = useState();
   const [purchasePrice, setPurchasePrice] = useState();
+  const [lastPrice , setLastPrice] = useState(0);
   const [leverage, setLeverage] = useState(1);
   const [direction, setDirection] = useState("Long");
-  // const cspots = [];
+  const [profit, setProfit] = useState(0)
 
   useEffect(() => {
     loadTableFromLocalStorage();
   }, []);
 
-  
-  const calculateProfit = (
-    direction,
-    lastPrice,
-    purchasePrice,
-    amount,
-    leverage
-  ) => {
-    const profit =
-      direction === "Long"
-        ? ((lastPrice / purchasePrice) * amount - amount) * leverage
-        : -1 * (((lastPrice / purchasePrice) * amount - amount) * leverage);
-
-    const profitRate = (profit / amount) * 100;
-    return { profit, profitRate };
-  };
 
   const addLocalStorage = (spot) => {
-    let cspots = JSON.parse(localStorage.getItem("cspots")) || [];
-    if (!Array.isArray(cspots)) {
-        cspots = []; // "cspots" bir dizi değilse, boş bir dizi olarak başlatın
+    let spots = JSON.parse(localStorage.getItem("spots")) || [];
+    if (!Array.isArray(spots)) {
+        spots = []; 
     }
-    cspots.push(spot);
-    localStorage.setItem("cspots", JSON.stringify(cspots));
+    spots.push(spot);
+    localStorage.setItem("spots", JSON.stringify(spots));
   };
 
   function loadTableFromLocalStorage() {
-    const cspots = JSON.parse(localStorage.getItem("cspots"));
+    const spots = JSON.parse(localStorage.getItem("spots"));
     const table = document.getElementById("spot-table");
     
   
     table.innerHTML = "";
   
-    for (const spot of cspots) {
+    for (const spot of spots) {
       const row = createSpotRow(spot);  // Create a row using your existing function
   
       // Get the buttons in the row
       const deleteRowBtn = row.querySelector("#deleteRowBtn");
-      const refreshBtn = row.querySelector("#refreshBtn");
-      const finishBtn = row.querySelector("#finishBtn");
   
       // Attach event listeners to the buttons
       deleteRowBtn.addEventListener("click", () => {
         handleDeleteRow(row, spot.coin);
-      });
-  
-      refreshBtn.addEventListener("click", () => {
-        handleRefreshBtn(row, spot);
-      });
-  
-      finishBtn.addEventListener("click", () => {
-        handleFinishBtn( row  , spot );
-        handleDeleteRow(row , spot.coin)
       });
   
       table.appendChild(row);
@@ -82,23 +57,15 @@ function CurrentTransaction() {
       direction,
       lastPrice,
       profit,
-      profitRate,
     } = spot;
 
     row.cells[0].innerHTML = coin;
     row.cells[1].innerHTML = amount;
     row.cells[2].innerHTML = purchasePrice;
-    row.cells[3].innerHTML = lastPrice.toFixed(4);
+    row.cells[3].innerHTML = lastPrice;
     row.cells[4].innerHTML = leverage;
     row.cells[5].innerHTML = direction;
-    row.cells[6].innerHTML = profit.toFixed(2);
-    row.cells[7].innerHTML = profitRate.toFixed(2) + "%";
-
-    if (profitRate > 0) {
-      row.cells[7].style.color = "green";
-    } else {
-      row.cells[7].style.color = "red";
-    }
+    row.cells[6].innerHTML = profit;
 
     if (profit > 0) {
       row.cells[6].style.color = "green";
@@ -110,20 +77,20 @@ function CurrentTransaction() {
   };
 
   const updateBalance = () => {
-    var cspots = JSON.parse(localStorage.getItem("cspots"));
+    var spots = JSON.parse(localStorage.getItem("spots"));
 
     var currentProfit = 0;
     var currentBalance = 0;
 
-    if (cspots !== null) {
-      for (var i = 0; i < cspots.length; i++) {
-        currentBalance += parseFloat(cspots[i].amount);
+    if (spots !== null) {
+      for (var i = 0; i < spots.length; i++) {
+        currentBalance += parseFloat(spots[i].amount);
       }
     }
 
-    if (cspots !== null) {
-      for (var j = 0; j < cspots.length; j++) {
-        currentProfit += parseFloat(cspots[j].profit);
+    if (spots !== null) {
+      for (var j = 0; j < spots.length; j++) {
+        currentProfit += parseFloat(spots[j].profit);
       }
     }
 
@@ -132,19 +99,12 @@ function CurrentTransaction() {
     var walletDiv = document.getElementById("bakiye");
     walletDiv.textContent = "Current Balance : " + walletPrice.toFixed(3) + "$";
 
-    var pnlDiv = document.getElementById("pnl");
-    pnlDiv.textContent = "Current PNL : " + currentProfit.toFixed(2) + "$";
+    var profitDiv = document.getElementById("profit");
+    profitDiv.textContent = "Current PNL : " + currentProfit.toFixed(2) + "$";
 
     console.log(walletPrice);
     console.log(currentProfit);
   };
-
-  async function fetchCurrentPrice(coin) {
-    const apiUrl = `https://api.coingecko.com/api/v3/simple/price?ids=${coin}&vs_currencies=usd`;
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-    return data[coin.toLowerCase()].usd;
-  }
   
   function createSpotRow(spot) {
     const table = document.getElementById("spot-table");
@@ -158,10 +118,6 @@ function CurrentTransaction() {
   
     row.cells[8].innerHTML =
       '<button id="deleteRowBtn" class="btn btn-outline-danger"><i class="bi bi-trash"></i></button>';
-    row.cells[9].innerHTML =
-      '<button id="refreshBtn" class="btn btn-outline-primary"><i class="bi bi-arrow-clockwise"></i></button>';
-    row.cells[10].innerHTML =
-      '<button id="finishBtn" class="d-flex align-items-baseline btn btn-outline-success">Sold <i class="bi bi-check-circle"></i></button>';
   
     return row;
   }
@@ -169,65 +125,18 @@ function CurrentTransaction() {
   function handleDeleteRow(row, coin) {
     row.remove();
   
-    const cspots = JSON.parse(localStorage.getItem("cspots"));
-    const index = cspots.findIndex((spot) => spot.coin === coin);
+    const spots = JSON.parse(localStorage.getItem("spots"));
+    const index = spots.findIndex((spot) => spot.coin === coin);
   
     if (index > -1) {
-      cspots.splice(index, 1);
-      localStorage.setItem("cspots", JSON.stringify(cspots));
+      spots.splice(index, 1);
+      localStorage.setItem("spots", JSON.stringify(spots));
     }
 
     updateBalance();
   }
   
-  async function handleRefreshBtn(row, spot) {
-    const lastPrice = await fetchCurrentPrice(spot.coin);
-  
-    spot.lastPrice = lastPrice;
-  
-    const { profit, profitRate } = calculateProfit(
-      spot.direction,
-      lastPrice,
-      spot.purchasePrice,
-      spot.amount,
-      spot.leverage
-    );
-  
-    spot.profit = profit;
-    spot.profitRate = profitRate;
-  
-    updateUIWithProfit(row, spot);
-    updateBalance();
-  }
-  
-  function handleFinishBtn(row , spot) {
-
-    const soldSpot = {
-      coin: spot.coin,
-      amount: spot.amount,
-      purchasePrice: spot.purchasePrice,
-      leverage: spot.leverage,
-      direction: spot.direction,
-      lastPrice: spot.lastPrice,
-      profit: spot.profit,
-      profitRate: spot.profitRate,
-    };
-  
-    const soldArray = JSON.parse(localStorage.getItem("spots")) || [];
-    soldArray.push(soldSpot);
-    localStorage.setItem("spots", JSON.stringify(soldArray));
-  }
-  
   async function SubmitForm() {
-    const lastPrice = await fetchCurrentPrice(coin);
-  
-    const { profit, profitRate } = calculateProfit(
-      direction,
-      lastPrice,
-      purchasePrice,
-      amount,
-      leverage
-    );
   
     const spot = {
       coin,
@@ -236,30 +145,17 @@ function CurrentTransaction() {
       leverage,
       direction,
       lastPrice,
-      profit,
-      profitRate,
     };
   
     addLocalStorage(spot);
     const row = createSpotRow(spot);
   
     const deleteRowBtn = row.querySelector("#deleteRowBtn");
-    const refreshBtn = row.querySelector("#refreshBtn");
-    const finishBtn = row.querySelector("#finishBtn");
   
     deleteRowBtn.addEventListener("click", () => {
       handleDeleteRow(row, coin);
     });
-  
-    refreshBtn.addEventListener("click", () => {
-      handleRefreshBtn(row, spot);
-    });
-  
-    finishBtn.addEventListener("click", () => {
-      handleFinishBtn(row , spot );
-      handleDeleteRow(row, coin)
-    });
-    
+
     updateBalance();
   }
 
@@ -270,11 +166,10 @@ function CurrentTransaction() {
       table.deleteRow(-1)
     }
 
-    localStorage.setItem("cspots", JSON.stringify([])); 
+    localStorage.setItem("spots", JSON.stringify([]));
 
     updateBalance();
   }
-  
 
   return (
     <div>
@@ -282,7 +177,7 @@ function CurrentTransaction() {
         className="container mt-5"
         style={{ color: "midnightblue", fontWeight: 600 }}
       >
-        <h1 className="mb-4">Spot Purchase Records</h1>
+        <h1 className="mb-4">Transaction Records</h1>
         <form>
           <div
             className="row mb-3"
@@ -298,7 +193,7 @@ function CurrentTransaction() {
                 onChange={(e) => setCoin(e.target.value)}
               />
             </div>
-            <div className="col-md-2">
+            <div className="col-md-1">
               <label htmlFor="amount">Amount:</label>
               <input
                 type="number"
@@ -320,6 +215,17 @@ function CurrentTransaction() {
               />
             </div>
             <div className="col-md-2">
+              <label htmlFor="lastPrice">Last Price:</label>
+              <input
+                type="number"
+                min={0}
+                className="form-control"
+                id="lastPrice"
+                value={lastPrice}
+                onChange={(e) => setLastPrice(e.target.value)}
+              />
+            </div>
+            <div className="col-md-1">
               <label htmlFor="leverage">Leverage:</label>
               <input
                 placeholder="default : 1"
@@ -331,7 +237,7 @@ function CurrentTransaction() {
                 onChange={(e) => setLeverage(e.target.value)}
               />
             </div>
-            <div className="col-md-2">
+            <div className="col-md-1">
               <label htmlFor="longShort">Long/Short</label>
               <select
                 className="form-control"
@@ -342,6 +248,17 @@ function CurrentTransaction() {
                 <option>Long</option>
                 <option>Short</option>
               </select>
+            </div>
+            <div className="col-md-1">
+              <label htmlFor="profit">PNL:</label>
+              <input
+                placeholder="default : 1"
+                type="number"
+                className="form-control"
+                id="profit"
+                value={profit}
+                onChange={(e) => setProfit(e.target.value)}
+              />
             </div>
             <div className="col-md-2">
               <button
@@ -362,11 +279,10 @@ function CurrentTransaction() {
               <th>Cryptocurrency</th>
               <th>Amount</th>
               <th>Purchase Price</th>
-              <th>Current Price</th>
+              <th>Last Price</th>
               <th>Kaldıraç</th>
               <th>Yön</th>
               <th>Instant Profit</th>
-              <th>Instant Profit Rate</th>
               <th></th>
             </tr>
           </thead>
@@ -382,7 +298,7 @@ function CurrentTransaction() {
             borderRadius: "4px",
             textAlign: "center",
           }}
-          id="pnl"
+          id="profit"
         >
           Current PNL:
         </div>
@@ -409,4 +325,4 @@ function CurrentTransaction() {
   );
 }
 
-export default CurrentTransaction;
+export default TransactionRecord;
