@@ -1,0 +1,27 @@
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+    }
+
+    .collapse:not(.show) {
+        display:flex;
+    }
+
+    #menu {
+        flex-direction: row;
+        font-size: 15px;
+    }
+
+    .nav-item {
+        margin: 3px;
+    }
+
+    #menu2 {
+        display: flex;
+        flex-direction: row;
+    }
+
+    #play-pause-button {
+        width: 100%;
+    }
+}
