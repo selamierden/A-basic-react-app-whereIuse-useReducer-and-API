@@ -41,6 +41,7 @@ function CurrentTransaction() {
   function loadTableFromLocalStorage() {
     const cspots = JSON.parse(localStorage.getItem("cspots"));
     const table = document.getElementById("spot-table");
+    
   
     table.innerHTML = "";
   
@@ -62,7 +63,8 @@ function CurrentTransaction() {
       });
   
       finishBtn.addEventListener("click", () => {
-        handleFinishBtn( row  , spot , coin);
+        handleFinishBtn( row  , spot );
+        handleDeleteRow(row , spot.coin)
       });
   
       table.appendChild(row);
@@ -200,8 +202,6 @@ function CurrentTransaction() {
   
   function handleFinishBtn(row , spot) {
 
-    handleDeleteRow(row , coin)
-
     const soldSpot = {
       coin: spot.coin,
       amount: spot.amount,
@@ -256,9 +256,22 @@ function CurrentTransaction() {
     });
   
     finishBtn.addEventListener("click", () => {
-      handleFinishBtn(row , spot , coin);
+      handleFinishBtn(row , spot );
+      handleDeleteRow(row, coin)
     });
     
+    updateBalance();
+  }
+
+  const clearTable = () => {
+    var table = document.getElementById("table");
+
+    while(table.rows.length > 1){
+      table.deleteRow(-1)
+    }
+
+    localStorage.setItem("cspots", JSON.stringify([]));
+
     updateBalance();
   }
   
@@ -388,7 +401,7 @@ function CurrentTransaction() {
           Current Balance: $
         </div>
         <br />
-        <button id="clearbtn" className="btn btn-outline-danger">
+        <button onClick={clearTable} id="clearbtn" className="btn btn-outline-danger">
           Clear
         </button>
       </div>
