@@ -100,7 +100,7 @@ function TransactionRecord() {
     walletDiv.textContent = "Current Balance : " + walletPrice.toFixed(3) + "$";
 
     var profitDiv = document.getElementById("profit");
-    profitDiv.textContent = "Current PNL : " + currentProfit.toFixed(2) + "$";
+    profitDiv.textContent = "Current PNL : " + currentProfit + "$";
 
     console.log(walletPrice);
     console.log(currentProfit);
@@ -145,6 +145,7 @@ function TransactionRecord() {
       leverage,
       direction,
       lastPrice,
+      profit
     };
   
     addLocalStorage(spot);
